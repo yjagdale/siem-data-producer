@@ -29,6 +29,3 @@ jobs:
         name: yjagdale/siem-data-producer:latest
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    -
-      name: Image digest
-      run: echo ${{ steps.docker_build.outputs.digest }}
