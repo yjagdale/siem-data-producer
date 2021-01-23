@@ -17,7 +17,6 @@ func StartApp() {
 
 func startApplication() {
 	err := router.Run(":8080")
-
 	if err != nil {
 		log.Fatalln("failed to start ", err.Error())
 	}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"github.com/yjagdale/siem-data-producer/config/constant"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -39,7 +40,7 @@ func UploadFile(c *gin.Context) {
 	if err != nil {
 		log.Errorln("Error while creating dir", err.Error())
 	}
-	if err := c.SaveUploadedFile(file, "/tmp/storage/logs/"+deviceType+deviceVendor+filename); err != nil {
+	if err := c.SaveUploadedFile(file, constant.FileOutputBasePath+deviceType+deviceVendor+filename); err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 		return
 	}

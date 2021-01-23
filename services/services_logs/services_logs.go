@@ -1,8 +1,8 @@
 package services_logs
 
 import (
-	"seca-data-producer/models/model_logs"
-	"seca-data-producer/utils/utils_http/response"
+	"github.com/yjagdale/siem-data-producer/models/model_logs"
+	"github.com/yjagdale/siem-data-producer/utils/utils_http/response"
 )
 
 func GetAvailableLogFiles(fileName string) (*[]model_logs.Logs, *response.RestResponse) {
