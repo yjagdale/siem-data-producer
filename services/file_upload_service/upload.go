@@ -2,15 +2,16 @@ package file_upload_service
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-	"github.com/yjagdale/siem-data-producer/config/constant"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func UploadFile(c *gin.Context) {
+	logsDir := c.PostForm("logsDir") + "/"
 	deviceType := c.PostForm("deviceType") + "/"
 	if deviceType == "/" {
 		c.String(http.StatusBadRequest, "Device type is mandatory")
@@ -36,11 +37,11 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	err = os.MkdirAll("/tmp/storage/logs/"+deviceType+deviceVendor, 0755)
+	err = os.MkdirAll(logsDir+deviceType+deviceVendor, 0755)
 	if err != nil {
 		log.Errorln("Error while creating dir", err.Error())
 	}
-	if err := c.SaveUploadedFile(file, constant.FileOutputBasePath+deviceType+deviceVendor+filename); err != nil {
+	if err := c.SaveUploadedFile(file, logsDir+deviceType+deviceVendor+filename); err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 		return
 	}
