@@ -32,8 +32,8 @@ func UploadFile(c *gin.Context) {
 
 	filename := filepath.Base(file.Filename)
 	fileExtension := filepath.Ext(filename)
-	if fileExtension != ".log" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"Error": "Format Not supported", "Code": 400, "AdditionalInfo": "Supported Formats: ['.log', 'csv']"})
+	if fileExtension != ".log" && fileExtension != ".csv" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"Error": "Format Not supported", "Code": 400, "AdditionalInfo": "Supported Formats are: ['.log', '.csv']"})
 		return
 	}
 
