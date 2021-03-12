@@ -2,16 +2,19 @@ package file_upload_service
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/yjagdale/siem-data-producer/config/constant"
 	"net/http"
 	"os"
 	"path/filepath"
-
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
 
+type FileService interface {
+	UploadFile(c *gin.Context)
+}
+
 func UploadFile(c *gin.Context) {
-	logsDir := c.PostForm("logsDir") + "/"
 	deviceType := c.PostForm("deviceType") + "/"
 	if deviceType == "/" {
 		c.String(http.StatusBadRequest, "Device type is mandatory")
@@ -36,15 +39,15 @@ func UploadFile(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"Error": "Format Not supported", "Code": 400, "AdditionalInfo": "Supported Formats are: ['.log', '.csv']"})
 		return
 	}
-
-	err = os.MkdirAll(logsDir+deviceType+deviceVendor, 0755)
+	url := c.Request.Header.Get("origin")
+	fmt.Println(url)
+	err = os.MkdirAll(constant.FileOutputBasePath+deviceType+deviceVendor, 0755)
 	if err != nil {
 		log.Errorln("Error while creating dir", err.Error())
 	}
-	if err := c.SaveUploadedFile(file, logsDir+deviceType+deviceVendor+filename); err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+	if err := c.SaveUploadedFile(file, constant.FileOutputBasePath+deviceType+deviceVendor+filename); err != nil {
+		c.Redirect(302, url+"/ui/?uploadStatus="+fmt.Sprintf("Upload failed due to %s ", err))
 		return
 	}
-
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully", file.Filename))
+	c.Redirect(302, url+"/ui/?uploadStatus="+fmt.Sprintf("File %s uploaded successfully", file.Filename))
 }
