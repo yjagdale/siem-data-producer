@@ -10,6 +10,10 @@ import (
 	"path/filepath"
 )
 
+type FileService interface {
+	UploadFile(c *gin.Context)
+}
+
 func UploadFile(c *gin.Context) {
 	deviceType := c.PostForm("deviceType") + "/"
 	if deviceType == "/" {
@@ -31,19 +35,19 @@ func UploadFile(c *gin.Context) {
 
 	filename := filepath.Base(file.Filename)
 	fileExtension := filepath.Ext(filename)
-	if fileExtension != ".log" {
-		c.String(http.StatusBadRequest, fmt.Sprintf("%s is not supported at the moment. Supported formats .log", fileExtension))
+	if fileExtension != ".log" && fileExtension != ".csv" {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"Error": "Format Not supported", "Code": 400, "AdditionalInfo": "Supported Formats are: ['.log', '.csv']"})
 		return
 	}
-
-	err = os.MkdirAll("/tmp/storage/logs/"+deviceType+deviceVendor, 0755)
+	url := c.Request.Header.Get("origin")
+	fmt.Println(url)
+	err = os.MkdirAll(constant.FileOutputBasePath+deviceType+deviceVendor, 0755)
 	if err != nil {
 		log.Errorln("Error while creating dir", err.Error())
 	}
 	if err := c.SaveUploadedFile(file, constant.FileOutputBasePath+deviceType+deviceVendor+filename); err != nil {
-		c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
+		c.Redirect(302, url+"/ui/?uploadStatus="+fmt.Sprintf("Upload failed due to %s ", err))
 		return
 	}
-
-	c.String(http.StatusOK, fmt.Sprintf("File %s uploaded successfully", file.Filename))
+	c.Redirect(302, url+"/ui/?uploadStatus="+fmt.Sprintf("File %s uploaded successfully", file.Filename))
 }
