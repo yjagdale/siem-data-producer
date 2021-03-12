@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM centos:7
 
 WORKDIR /home
 ADD siem-data-producer siem-data-producer
