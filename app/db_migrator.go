@@ -1,6 +1,6 @@
 package app
 
-import (
+/* import (
 	"github.com/yjagdale/siem-data-producer/database"
 	"github.com/yjagdale/siem-data-producer/models/model_logs"
 	"log"
@@ -16,3 +16,4 @@ func MigrateDB() {
 		}
 	}
 }
+*/
