@@ -8,13 +8,28 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        function checkfile(sender) {
+            var validExts = new Array(".log", ".csv");
+            var fileExt = sender.value;
+            fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+            if (validExts.indexOf(fileExt) < 0) {
+              alert("Invalid file selected, valid files are of " +
+                       validExts.toString() + " types.");
+                       sender.value="";
+              return false;
+            }
+            else return true;
+        }
+        </script>
+      
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
 <section>
     <div class="box-border" style="padding:20px 0px;">
-        <h1 class="title" style="padding-top:0px;">Upload single file <br> with fields</h1>
+        <h1 class="title" id="heading" style="padding-top:0px;">Upload single file <br> with fields</h1>
         <form action="/upload" method="post" autocomplete="off" enctype="multipart/form-data">
             <div class="content mt-5 mx-auto">
                 <input
@@ -24,17 +39,17 @@
                         type="text"
                         pattern="[^\\/:\x22*?<>|]+"
                         placeholder="Device Type"
-                        required="">
+                        required=""/>
                 <span class="border"></span>
             </div>
             <div class="content mt-5 mx-auto">
                 <input class="input" id="deviceVendor" type="text" placeholder="Device Vendor" name="deviceVendor"
-                       required="">
+                       required=""/>
                 <span class="border"></span>
             </div>
             <br>
             <div class="content mt-5 mx-auto">
-                <input type="file" name="file">
+                <input type="file" name="file" onChange="checkfile(this);" accept=".csv,.log" value=""/>
             </div>
             <br>
             <div class="content mt-5 mx-auto">

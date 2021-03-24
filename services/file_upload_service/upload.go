@@ -2,12 +2,13 @@ package file_upload_service
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
-	"github.com/yjagdale/siem-data-producer/config/constant"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/yjagdale/siem-data-producer/config/constant"
 )
 
 type FileService interface {
@@ -34,11 +35,6 @@ func UploadFile(c *gin.Context) {
 	}
 
 	filename := filepath.Base(file.Filename)
-	fileExtension := filepath.Ext(filename)
-	if fileExtension != ".log" && fileExtension != ".csv" {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"Error": "Format Not supported", "Code": 400, "AdditionalInfo": "Supported Formats are: ['.log', '.csv']"})
-		return
-	}
 	url := c.Request.Header.Get("origin")
 	fmt.Println(url)
 	err = os.MkdirAll(constant.FileOutputBasePath+deviceType+deviceVendor, 0755)
