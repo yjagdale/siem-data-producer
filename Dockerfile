@@ -1,4 +1,4 @@
-FROM centos:7
+FROM centos:8
 
 WORKDIR /home
 ENV GIN_MODE=release
