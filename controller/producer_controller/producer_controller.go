@@ -30,10 +30,6 @@ func Produce(c *gin.Context) {
 	}
 
 	log.Infoln("Producing logs on destination", producerEntity.DestinationIP, "over port", producerEntity.DestinationPort)
-	err := producer_service.ProduceSingle(producerEntity)
-	if err != nil {
-		c.JSON(err.Status, err)
-		return
-	}
-	c.JSON(202, gin.H{"Message": "Producer running in background", "status": 202})
+	response := producer_service.Produce(producerEntity)
+	c.JSON(response[0].Status, response)
 }

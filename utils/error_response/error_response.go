@@ -1,6 +1,9 @@
 package error_response
 
-import "net/http"
+import (
+	"net/http"
+	"strconv"
+)
 
 type RestErr struct {
 	Message string `json:"message"`
@@ -9,6 +12,10 @@ type RestErr struct {
 
 func NewBadRequest(message string) *RestErr {
 	return &RestErr{Message: message, Status: http.StatusBadRequest}
+}
+
+func NewPartialProcessError(successCount int, failCount int) *RestErr {
+	return &RestErr{Message: "success:" + strconv.Itoa(successCount) + " failed: " + strconv.Itoa(failCount), Status: http.StatusPartialContent}
 }
 
 func NewNotFound(message string) *RestErr {
