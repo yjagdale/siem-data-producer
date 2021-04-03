@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" language="javascript">
+        function checkfile(sender) {
+            var validExts = new Array(".log", ".csv");
+            var fileExt = sender.value;
+            fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+            if (validExts.indexOf(fileExt) < 0) {
+                alert("Invalid file selected, valid files are of " +
+                    validExts.toString() + " types.");
+                sender.value="";
+                return false;
+            }
+            else return true;
+        }
+    </script>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
@@ -34,7 +48,7 @@
             </div>
             <br>
             <div class="content mt-5 mx-auto">
-                <input type="file" name="file">
+                <input type="file" name="file" onChange="checkfile(this);" accept=".csv,.log" value="">
             </div>
             <br>
             <div class="content mt-5 mx-auto">

@@ -1,4 +1,4 @@
-FROM centos:8
+FROM debian:9.5-slim
 
 WORKDIR /home
 ENV GIN_MODE=release
