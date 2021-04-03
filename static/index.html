@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Single file upload</title>
+    <title>Upload Log Sample</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" language="javascript">
-        function checkfile(sender) {
+        function checkable(sender) {
             var validExts = new Array(".log", ".csv");
             var fileExt = sender.value;
             fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
@@ -28,7 +28,7 @@
 
 <section>
     <div class="box-border" style="padding:20px 0px;">
-        <h1 class="title" style="padding-top:0px;">Upload Log File <br> For processing</h1>
+        <h1 class="title" style="padding-top:0px;">Upload Log File For processing</h1>
         <form action="/upload" method="post" autocomplete="off" enctype="multipart/form-data">
             <div class="content mt-5 mx-auto">
                 <input
@@ -48,7 +48,7 @@
             </div>
             <br>
             <div class="content mt-5 mx-auto">
-                <input type="file" name="file" onChange="checkfile(this);" accept=".csv,.log" value="">
+                <input type="file" name="file" onChange="checkable(this);" accept=".csv,.log" value="">
             </div>
             <br>
             <div class="content mt-5 mx-auto">
