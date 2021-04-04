@@ -1,11 +1,11 @@
 package producer_service
 
 import (
-	"github.com/yjagdale/siem-data-producer/models/model_logs"
+	"github.com/yjagdale/siem-data-producer/models/producer_model"
 	"github.com/yjagdale/siem-data-producer/utils/error_response"
 )
 
-func Produce(producerEntity model_logs.ProducerEntity) []*error_response.RestErr {
+func Produce(producerEntity producer_model.ProducerEntity) []*error_response.RestErr {
 
 	if len(producerEntity.Logs) <= 0 {
 		var errorResp []*error_response.RestErr

@@ -3,7 +3,7 @@ package producer_controller
 import (
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
-	"github.com/yjagdale/siem-data-producer/models/model_logs"
+	"github.com/yjagdale/siem-data-producer/models/producer_model"
 	"github.com/yjagdale/siem-data-producer/services/producer_service"
 	"github.com/yjagdale/siem-data-producer/utils/error_response"
 	"io"
@@ -11,7 +11,7 @@ import (
 
 func Produce(c *gin.Context) {
 
-	var producerEntity model_logs.ProducerEntity
+	var producerEntity producer_model.ProducerEntity
 
 	isValid := c.ShouldBindJSON(&producerEntity)
 

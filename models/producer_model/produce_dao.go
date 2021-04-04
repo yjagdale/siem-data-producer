@@ -1,4 +1,4 @@
-package model_logs
+package producer_model
 
 import (
 	"github.com/yjagdale/siem-data-producer/utils/error_response"

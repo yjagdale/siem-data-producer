@@ -5,8 +5,8 @@ import (
 	"github.com/yjagdale/siem-data-producer/utils/utils_http/response"
 )
 
-func GetAvailableLogFiles(fileName string) (*[]model_logs.Logs, *response.RestResponse) {
-	var logs model_logs.Logs
+func GetAvailableLogFiles(fileName string) (*[]logs_model.Logs, *response.RestResponse) {
+	var logs logs_model.Logs
 
 	if fileName != "" {
 		logs.DeviceType = fileName
