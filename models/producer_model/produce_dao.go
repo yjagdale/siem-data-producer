@@ -1,8 +1,12 @@
 package producer_model
 
 import (
-	"github.com/yjagdale/siem-data-producer/utils/error_response"
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
+	"github.com/yjagdale/siem-data-producer/Formatter"
 	"github.com/yjagdale/siem-data-producer/utils/networkUtils"
+	"github.com/yjagdale/siem-data-producer/utils/response"
+	"net/http"
 	"strconv"
 )
 
@@ -14,17 +18,32 @@ type ProducerEntity struct {
 	Iterations      int      `json:"iterations" binding:"required"`
 }
 
-func (entity ProducerEntity) Produce() []*error_response.RestErr {
-	var response []*error_response.RestErr
+func (entity ProducerEntity) Produce() *response.RestErr {
+	restResponse := response.RestErr{}
 	destinationServer := entity.DestinationIP + ":" + strconv.Itoa(entity.DestinationPort)
 	connection, err := networkUtils.GetConnection(destinationServer, entity.Protocol)
 	if err != nil {
-		response := append(response, error_response.NewBadRequest(err.Error()))
-		return response
+		return response.NewBadRequest(gin.H{"error": err.Error()})
 	}
 	defer connection.Close()
+	var execution map[string]gin.H
+	execution = make(map[string]gin.H)
 	for i := 0; i < entity.Iterations; i++ {
-		response = append(response, networkUtils.ProduceLogs(connection, entity.Logs))
+		runStatus := networkUtils.ProduceLogs(i, connection, entity.Logs)
+		execution["iteration_"+strconv.Itoa(i)] = runStatus
 	}
-	return response
+	restResponse.Message = gin.H{"Execution Status": execution}
+	return &restResponse
+}
+
+func (entity ProducerEntity) ProduceTest() *response.RestErr {
+	outputLogs := response.RestErr{}
+	outputLogs.Status = http.StatusOK
+	log.Infoln("Debugging logs")
+	var formattedLogs []string
+	for _, logLine := range entity.Logs {
+		formattedLogs = append(formattedLogs, Formatter.FormatLog(logLine))
+	}
+	outputLogs.Message = gin.H{"Formatted Logs": formattedLogs}
+	return &outputLogs
 }

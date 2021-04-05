@@ -2,9 +2,9 @@ package networkUtils
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"github.com/yjagdale/siem-data-producer/Formatter"
-	"github.com/yjagdale/siem-data-producer/utils/error_response"
 	"net"
 	"strings"
 	"time"
@@ -30,7 +30,7 @@ func GetConnection(destinationServer string, protocol string) (net.Conn, error) 
 	return conn, nil
 }
 
-func ProduceLogs(connection net.Conn, logs []string) *error_response.RestErr {
+func ProduceLogs(iteration int, connection net.Conn, logs []string) gin.H {
 	success := 0
 	failed := 0
 	for _, logLine := range logs {
@@ -42,10 +42,11 @@ func ProduceLogs(connection net.Conn, logs []string) *error_response.RestErr {
 			success++
 		}
 	}
-	return error_response.NewPartialProcessError(success, failed)
+	return gin.H{"Success": success, "Failed": failed}
 }
 
 func pushLog(connection net.Conn, logLine string) error {
+	log.Infoln(logLine)
 	noOfBytes, err := fmt.Fprintln(connection, logLine)
 	if err != nil {
 		return err
