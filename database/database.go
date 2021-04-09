@@ -1,6 +1,6 @@
 package database
 
-/*import (
+import (
 	log "github.com/sirupsen/logrus"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -32,4 +32,4 @@ func ConnectToDb() {
 func ValidateDBConnection() bool {
 	err := Connection.Exec("SELECT 1").Error
 	return err == nil
-}*/
+}

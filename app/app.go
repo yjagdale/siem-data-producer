@@ -10,7 +10,7 @@ var router *gin.Engine
 
 func StartApp() {
 	logger.InitLogger()
-	// MigrateDB()
+	MigrateDB()
 	MapUrls()
 	startApplication()
 }
