@@ -1,7 +1,7 @@
 package constant
 
 const (
-	FileOutputBasePath   = "/storage/logs"
+	FileOutputBasePath   = "/storage/logs/"
 	ExecutionModeTest    = "TEST"
 	ExecutionModeProduce = "PRODUCE"
 )
