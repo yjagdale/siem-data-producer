@@ -1,5 +1,5 @@
 package constant
 
 const (
-	FileOutputBasePath = "/storage/logs"
+	FileOutputBasePath = "/storage/logs/"
 )
