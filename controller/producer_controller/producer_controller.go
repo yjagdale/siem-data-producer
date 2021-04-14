@@ -8,6 +8,7 @@ import (
 	"github.com/yjagdale/siem-data-producer/services/producer_service"
 	"github.com/yjagdale/siem-data-producer/utils/response"
 	"io"
+	"net/http"
 )
 
 func Produce(c *gin.Context) {
@@ -35,6 +36,31 @@ func Produce(c *gin.Context) {
 	c.JSON(response.Status, response)
 }
 
+func ProduceAsync(c *gin.Context) {
+
+	var producerEntity producer_model.ProducerEntity
+
+	isValid := c.ShouldBindJSON(&producerEntity)
+
+	if isValid == io.EOF {
+		log.Errorln(isValid)
+		restResponse := response.NewBadRequest(gin.H{"Message": "Empty Body? May be!"})
+		c.JSON(restResponse.Status, restResponse)
+		return
+	}
+
+	if isValid != nil {
+		log.Errorln(isValid)
+		restResponse := response.NewBadRequest(gin.H{"Message": "Invalid Body"})
+		c.JSON(restResponse.Status, restResponse)
+		return
+	}
+
+	log.Infoln("Producing logs on destination", producerEntity.DestinationIP, "over port", producerEntity.DestinationPort)
+	go producer_service.Produce(producerEntity, constant.ExecutionModeProduce)
+	c.JSON(http.StatusAccepted, gin.H{"Message": "Execution started"})
+}
+
 func ProduceTest(c *gin.Context) {
 	var producerEntity producer_model.ProducerEntity
 
@@ -42,8 +68,8 @@ func ProduceTest(c *gin.Context) {
 
 	if isValid == io.EOF {
 		log.Errorln(isValid)
-		response := response.NewBadRequest(gin.H{"Message": "Empty Body? May be!"})
-		c.JSON(response.Status, response)
+		restResponse := response.NewBadRequest(gin.H{"Message": "Empty Body? May be!"})
+		c.JSON(restResponse.Status, restResponse)
 		return
 	}
 

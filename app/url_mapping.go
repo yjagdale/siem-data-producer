@@ -21,6 +21,7 @@ func MapUrls() {
 	router.Static("/ui", "./static")
 
 	router.POST("/producer/produce", producer_controller.Produce)
+	router.POST("/producer/produce/async", producer_controller.ProduceAsync)
 	router.POST("/producer/produce/test", producer_controller.ProduceTest)
 
 	router.POST("/producer/overrides", override_controller.AddOverride)
