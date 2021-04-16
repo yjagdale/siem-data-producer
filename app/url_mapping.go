@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/yjagdale/siem-data-producer/controller/file_producer_controller"
 	"github.com/yjagdale/siem-data-producer/controller/files_controller"
 	"github.com/yjagdale/siem-data-producer/controller/override_controller"
 	"github.com/yjagdale/siem-data-producer/controller/producer_controller"
@@ -23,6 +24,10 @@ func MapUrls() {
 	router.POST("/producer/produce", producer_controller.Produce)
 	router.POST("/producer/produce/async", producer_controller.ProduceAsync)
 	router.POST("/producer/produce/test", producer_controller.ProduceTest)
+
+	router.POST("/producer/produce/file", file_producer_controller.ProduceFile)
+	router.POST("/producer/produce/file/async", producer_controller.ProduceAsync)
+	router.POST("/producer/produce/file/test", producer_controller.ProduceTest)
 
 	router.POST("/producer/overrides", override_controller.AddOverride)
 
