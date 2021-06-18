@@ -46,7 +46,7 @@ func ProduceLogs(iteration int, connection net.Conn, logs []string) gin.H {
 }
 
 func pushLog(connection net.Conn, logLine string) error {
-	log.Infoln(logLine)
+	log.Debugln(logLine)
 	noOfBytes, err := fmt.Fprintln(connection, logLine)
 	if err != nil {
 		return err
