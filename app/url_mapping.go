@@ -23,6 +23,11 @@ func MapUrls() {
 
 	router.POST("/producer/produce", producer_controller.Produce)
 	router.POST("/producer/produce/async", producer_controller.ProduceAsync)
+	router.POST("/producer/produce/execute", producer_controller.ProduceContinues)
+	router.POST("/producer/produce/execute/stop/:executionId", producer_controller.StopExecutor)
+
+	router.GET("/producer/produce/executions", producer_controller.GetExecutions)
+
 	router.POST("/producer/produce/test", producer_controller.ProduceTest)
 
 	router.POST("/producer/produce/file", file_producer_controller.ProduceFile)

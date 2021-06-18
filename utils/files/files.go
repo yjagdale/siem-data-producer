@@ -3,8 +3,11 @@ package files
 import (
 	"bufio"
 	"github.com/sirupsen/logrus"
+	"math/rand"
 	"os"
 )
+
+var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func ReadFileLineByLine(filePath string) []string {
 	file, err := os.Open(filePath)
@@ -22,4 +25,12 @@ func ReadFileLineByLine(filePath string) []string {
 		logrus.Fatal(err)
 	}
 	return logsLines
+}
+
+func RandSeq(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
