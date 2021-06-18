@@ -65,7 +65,7 @@ func ProduceAsync(c *gin.Context) {
 	c.JSON(http.StatusAccepted, gin.H{"Message": "Execution started"})
 }
 func ProduceContinues(c *gin.Context) {
-	if continuesExecution["status"] {
+	if continuesExecution == nil {
 		continuesExecution = make(map[string]bool)
 		continuesExecution["status"] = true
 	}
@@ -105,6 +105,11 @@ func StopExecutor(c *gin.Context) {
 
 	if executionID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Message": "Execution id needed"})
+		return
+	}
+
+	if continuesExecution == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Message": "No Execution going on"})
 		return
 	}
 

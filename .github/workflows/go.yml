@@ -32,3 +32,11 @@ jobs:
         name: yjagdale/siem-data-producer
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+    - name: Publish current version
+      uses: elgohr/Publish-Docker-Github-Action@master
+      with:
+        name: yjagdale/siem-data-producer:1.0.0-SNAPSHOT
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
