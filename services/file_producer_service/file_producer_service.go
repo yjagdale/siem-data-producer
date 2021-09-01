@@ -6,12 +6,12 @@ import (
 	"github.com/yjagdale/siem-data-producer/models/file_producer_model"
 	"github.com/yjagdale/siem-data-producer/utils/networkUtils"
 	"github.com/yjagdale/siem-data-producer/utils/response"
-	"io/ioutil"
+	"os"
 	"strconv"
 )
 
 func PublishFile(publisher file_producer_model.FileProducer) *response.RestErr {
-	data, err := ioutil.ReadFile(publisher.Path)
+	stats, err := os.Stat(publisher.Path)
 	if err != nil {
 		return &response.RestErr{Status: 400, Message: gin.H{"Message": "File does not exists"}}
 	}
@@ -23,7 +23,7 @@ func PublishFile(publisher file_producer_model.FileProducer) *response.RestErr {
 	}
 	defer connection.Close()
 
-	log.Infoln("File existing and processing file. Records available in file are ", string(data))
+	log.Infoln("File existing and processing file. Records available in file are", stats.Size())
 	publisher.ReadAndPublish(connection)
 	return nil
 }
