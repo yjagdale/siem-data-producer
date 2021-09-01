@@ -6,6 +6,7 @@ import (
 	"github.com/yjagdale/siem-data-producer/models/file_producer_model"
 	"github.com/yjagdale/siem-data-producer/utils/networkUtils"
 	"github.com/yjagdale/siem-data-producer/utils/response"
+	"net"
 	"os"
 	"strconv"
 )
@@ -21,7 +22,12 @@ func PublishFile(publisher file_producer_model.FileProducer) *response.RestErr {
 	if err != nil {
 		return response.NewBadRequest(gin.H{"error": err.Error()})
 	}
-	defer connection.Close()
+	defer func(connection net.Conn) {
+		err := connection.Close()
+		if err != nil {
+			log.Infoln("Error while closing file")
+		}
+	}(connection)
 
 	log.Infoln("File existing and processing file. Records available in file are", stats.Size())
 	publisher.ReadAndPublish(connection)
