@@ -8,6 +8,7 @@ import (
 	"github.com/yjagdale/siem-data-producer/utils/response"
 	"io"
 	"net/http"
+	"os"
 )
 
 func ProduceFile(c *gin.Context) {
@@ -29,8 +30,17 @@ func ProduceFile(c *gin.Context) {
 	}
 
 	log.Infoln("Producing logs on destination", fileEntity.DestinationIP, "over port", fileEntity.DestinationPort, "From file", fileEntity.Path)
-
-	go file_producer_service.PublishFile(fileEntity)
-	c.JSON(http.StatusAccepted, gin.H{"Message": "Execution started"})
-	return
+	stats, err := os.Stat(fileEntity.Path)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"Error": err.Error()})
+	} else {
+		if stats.Size() > 1594682 {
+			go file_producer_service.PublishFile(fileEntity)
+			c.JSON(http.StatusAccepted, gin.H{"Message": "Large file provided. Execution will be done in background"})
+		} else {
+			resp := file_producer_service.PublishFile(fileEntity)
+			c.JSON(resp.Status, resp.Message)
+			return
+		}
+	}
 }
