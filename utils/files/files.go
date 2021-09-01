@@ -3,34 +3,37 @@ package files
 import (
 	"bufio"
 	"github.com/sirupsen/logrus"
-	"math/rand"
+	"github.com/yjagdale/siem-data-producer/utils/networkUtils"
+	"net"
 	"os"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func ReadFileLineByLine(filePath string) []string {
-	file, err := os.Open(filePath)
-	if err != nil {
-		logrus.Error(err)
-	}
-
+	file := readFile(filePath)
 	scanner := bufio.NewScanner(file)
 	var logsLines []string
 	for scanner.Scan() {
 		logsLines = append(logsLines, scanner.Text())
 	}
-	err = file.Close()
-	if err != nil {
-		logrus.Fatal(err)
-	}
+	defer file.Close()
 	return logsLines
 }
 
-func RandSeq(n int) string {
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+func ReadAndPublishInChunk(filePath string, connection net.Conn) {
+	file := readFile(filePath)
+	defer file.Close()
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		networkUtils.ProduceLog(connection, scanner.Text())
 	}
-	return string(b)
+}
+
+func readFile(path string) *os.File {
+	file, err := os.Open(path)
+	if err != nil {
+		logrus.Error(err)
+	}
+	return file
 }

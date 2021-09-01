@@ -30,6 +30,16 @@ func GetConnection(destinationServer string, protocol string) (net.Conn, error) 
 	return conn, nil
 }
 
+func ProduceLog(connection net.Conn, log string) bool {
+	logLine := Formatter.FormatLog(log)
+	err := pushLog(connection, logLine)
+	if err != nil {
+		return false
+	} else {
+		return true
+	}
+}
+
 func ProduceLogs(iteration int, connection net.Conn, logs []string) gin.H {
 	success := 0
 	failed := 0
