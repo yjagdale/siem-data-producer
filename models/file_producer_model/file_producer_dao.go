@@ -31,7 +31,7 @@ func (publisher FileProducer) ReadAndPublish(connection net.Conn) *response.Rest
 
 	if size > 1594682 {
 		log.Infoln("Large file, Producer will run in background")
-		files.ReadAndPublishInChunk(publisher.Path, connection)
+		go files.ReadAndPublishInChunk(publisher.Path, connection)
 		restResponse.Message = gin.H{"Message": "Large file, Execution started"}
 		restResponse.Status = 201
 		return &restResponse
