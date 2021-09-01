@@ -8,8 +8,6 @@ import (
 	"os"
 )
 
-var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
 func ReadFileLineByLine(filePath string) []string {
 	file := readFile(filePath)
 	scanner := bufio.NewScanner(file)
@@ -17,16 +15,30 @@ func ReadFileLineByLine(filePath string) []string {
 	for scanner.Scan() {
 		logsLines = append(logsLines, scanner.Text())
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			logrus.Error(err.Error())
+		}
+	}(file)
 	return logsLines
 }
 
 func ReadAndPublishInChunk(filePath string, connection net.Conn) {
 	file := readFile(filePath)
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			logrus.Error("Error while closing file", err.Error())
+		}
+	}(file)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		networkUtils.ProduceLog(connection, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		logrus.Errorln(err)
 	}
 }
 

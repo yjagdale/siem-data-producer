@@ -30,6 +30,5 @@ func PublishFile(publisher file_producer_model.FileProducer) *response.RestErr {
 	}(connection)
 
 	log.Infoln("File existing and processing file. Records available in file are", stats.Size())
-	publisher.ReadAndPublish(connection)
-	return nil
+	return publisher.ReadAndPublish(connection)
 }
