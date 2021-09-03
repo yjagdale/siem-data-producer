@@ -41,10 +41,10 @@ func ReadAndPublishInChunk(filePath string, connection net.Conn) {
 
 	for scanner.Scan() {
 		guard <- struct{}{}
-		go func() {
-			networkUtils.ProduceLog(connection, scanner.Text())
+		go func(conn net.Conn, data string) {
+			networkUtils.ProduceLog(conn, data)
 			<-guard
-		}()
+		}(connection, scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
