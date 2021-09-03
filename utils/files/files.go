@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"github.com/sirupsen/logrus"
 	"github.com/yjagdale/siem-data-producer/utils/networkUtils"
+	"math/rand"
 	"net"
 	"os"
 )
@@ -33,8 +34,17 @@ func ReadAndPublishInChunk(filePath string, connection net.Conn) {
 		}
 	}(file)
 	scanner := bufio.NewScanner(file)
+	min := 1
+	max := 10
+	maxGoroutines := rand.Intn(max-min) + min
+	guard := make(chan struct{}, maxGoroutines)
+
 	for scanner.Scan() {
-		networkUtils.ProduceLog(connection, scanner.Text())
+		guard <- struct{}{}
+		go func() {
+			networkUtils.ProduceLog(connection, scanner.Text())
+			<-guard
+		}()
 	}
 
 	if err := scanner.Err(); err != nil {
