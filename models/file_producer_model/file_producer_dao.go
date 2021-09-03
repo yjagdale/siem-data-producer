@@ -16,7 +16,7 @@ type FileProducer struct {
 	DestinationIP   string `json:"destination_ip"`
 	DestinationPort int    `json:"destination_port"`
 	Protocol        string `json:"protocol"`
-	Iterations      int    `json:"iterations"`
+	Eps             []int  `json:"EPS" binding:"required"`
 }
 
 func (publisher FileProducer) ReadAndPublish(connection net.Conn) *response.RestErr {
@@ -43,7 +43,7 @@ func (publisher FileProducer) ReadAndPublish(connection net.Conn) *response.Rest
 		}
 		var execution map[string]gin.H
 		execution = make(map[string]gin.H)
-		for i := 0; i < publisher.Iterations; i++ {
+		for i := 0; i < 2; i++ {
 			runStatus := networkUtils.ProduceLogs(i, connection, logLines)
 			execution["iteration_"+strconv.Itoa(i)] = runStatus
 		}
