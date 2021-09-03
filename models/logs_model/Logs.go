@@ -2,6 +2,8 @@ package logs_model
 
 import "gorm.io/gorm"
 
+var ContinuesExecution map[string]bool
+
 type Logs struct {
 	gorm.Model
 	DeviceType    string          `json:"device_type"`

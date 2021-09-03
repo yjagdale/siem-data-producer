@@ -31,7 +31,7 @@ func MapUrls() {
 	router.POST("/producer/produce/test", producer_controller.ProduceTest)
 
 	router.POST("/producer/produce/file", file_producer_controller.ProduceFile)
-	router.POST("/producer/produce/file/async", producer_controller.ProduceAsync)
+	router.POST("/producer/produce/file/async", file_producer_controller.ProduceFileAsync)
 	router.POST("/producer/produce/file/test", producer_controller.ProduceTest)
 
 	router.POST("/producer/overrides", override_controller.AddOverride)

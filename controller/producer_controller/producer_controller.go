@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 	"github.com/yjagdale/siem-data-producer/config/constant"
+	"github.com/yjagdale/siem-data-producer/models/logs_model"
 	"github.com/yjagdale/siem-data-producer/models/producer_model"
 	"github.com/yjagdale/siem-data-producer/services/producer_service"
 	"github.com/yjagdale/siem-data-producer/utils/response"
@@ -12,8 +13,6 @@ import (
 	"net/http"
 	"time"
 )
-
-var continuesExecution map[string]bool
 
 func Produce(c *gin.Context) {
 
@@ -65,9 +64,9 @@ func ProduceAsync(c *gin.Context) {
 	c.JSON(http.StatusAccepted, gin.H{"Message": "Execution started"})
 }
 func ProduceContinues(c *gin.Context) {
-	if continuesExecution == nil {
-		continuesExecution = make(map[string]bool)
-		continuesExecution["status"] = true
+	if logs_model.ContinuesExecution == nil {
+		logs_model.ContinuesExecution = make(map[string]bool)
+		logs_model.ContinuesExecution["status"] = true
 	}
 	var producerEntity producer_model.ProducerEntity
 
@@ -90,9 +89,9 @@ func ProduceContinues(c *gin.Context) {
 	log.Infoln("Producing logs on destination", producerEntity.DestinationIP, "over port", producerEntity.DestinationPort)
 
 	executionId := uuid.New().String()
-	continuesExecution[executionId] = true
+	logs_model.ContinuesExecution[executionId] = true
 	go func() {
-		for continuesExecution[executionId] != false {
+		for logs_model.ContinuesExecution[executionId] != false {
 			producer_service.Produce(producerEntity, constant.ExecutionModeProduce)
 			time.Sleep(5 * time.Second)
 		}
@@ -108,23 +107,23 @@ func StopExecutor(c *gin.Context) {
 		return
 	}
 
-	if continuesExecution == nil {
+	if logs_model.ContinuesExecution == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"Message": "No Execution going on"})
 		return
 	}
 
-	if continuesExecution[executionID] != true {
+	if logs_model.ContinuesExecution[executionID] != true {
 		c.JSON(http.StatusBadRequest, gin.H{"Message": "Execution already stopped"})
 		return
 	}
 
-	continuesExecution[executionID] = false
+	logs_model.ContinuesExecution[executionID] = false
 	c.JSON(http.StatusOK, gin.H{"Message": "Execution stopped. It will take ~5  mins to kill"})
 	return
 }
 
 func GetExecutions(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"Executions": continuesExecution})
+	c.JSON(http.StatusOK, gin.H{"Executions": logs_model.ContinuesExecution})
 }
 
 func ProduceTest(c *gin.Context) {
